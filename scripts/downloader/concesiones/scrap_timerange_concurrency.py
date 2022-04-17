@@ -111,7 +111,7 @@ async def get_async(page, url_template, csv_writer, session, errors):
 
 
 # Función para reprocesar páginas en error #
-async def retry(conc_req, url_template, csv_writer, session, errors):
+async def retry_errors(conc_req, url_template, csv_writer, session, errors):
       errors2 = {}
       logger.info("Reintentamos los errores [ " + str(errors.keys()) + " ]")
       await gather_with_concurrency(conc_req, *[get_async(page, url_template, csv_writer, session, errors2) for page in errors.keys()])
@@ -168,7 +168,7 @@ async def get_data(fromdate, todate, csv_writer):
 
     # Reprocesamos los errores
     while len(errors.keys()) > 0:
-      errors = await retry(conc_req, url_template, csv_writer, session, error)
+      errors = await retry_errors(conc_req, url_template, csv_writer, session, error)
 
 
   logger.info("Procesados un total de [ " + str(data['records']) + " ] registros para la fecha [ " + str(todate) + " ]")
